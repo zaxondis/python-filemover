@@ -8,6 +8,11 @@ and using daemon code instead. Just search for it with your favorite search engi
 
 TO USE:
 
+Prerequisites:
+  a) Make sure you have the windows libraries installed from: http://sourceforge.net/projects/pywin32/files/pywin32/
+    choose the latest build and make sure to download the .exe file for your version of Python and your chipset (32 or 
+    64 bit). (I'm using 2.7 since it is the most compatible with the widest variety of libraries at the moment)
+
 1. You can place this script anywhere you like on your machine.
 
 2. Change the variable originalpath to the file path you would like the script to act on. (Example in code)
