@@ -9,9 +9,10 @@ from os import path
 from time import ctime
 import os, sys, string, glob, time, shutil, time
 from datetime import datetime, timedelta
+from apscheduler.scheduler import Scheduler
 
 class filemover:
-    def main(self):
+    def movefiles():
         originalpath = "THE DIRECTORY PATH YOU'D LIKE TO READ GOES HERE. Example: C:\\Stuff\\Things\\*.txt. You can change the file extension to anything you like."
         newpath = "THE DIRECTORY PATH YOU'D LIKE TO WRITE TO GOES HERE."
         for filen in glob.glob(originalpath):
@@ -19,6 +20,13 @@ class filemover:
             filetime = datetime.fromtimestamp(path.getctime(filen))
             if filetime < fifteen_days_ago:
                 shutil.move(filen, newpath)
+
+    #Start the scheduler        
+    sched = Scheduler()
+    sched.start()
+
+    sched.add_cron_job(movefiles, hour='0')
+                
 
 #Windows service code, this code is used to install the script as a Windows service so it runs continually on the interval specified by self.timeout below.
 #It also writes to the windows event log when it starts, stops and if there are any errors.
@@ -39,8 +47,8 @@ class aservice(win32serviceutil.ServiceFramework):
    def SvcDoRun(self):
       servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,servicemanager.PYS_SERVICE_STARTED,(self._svc_name_, '')) 
       
-      self.timeout = 600000    #600 seconds / 10 minutes (value is in milliseconds)
-      #self.timeout = 10000     #10 seconds 
+      #self.timeout = 600000    #600 seconds / 10 minutes (value is in milliseconds)
+      self.timeout = 0      
       # This is how long the service will wait to run / refresh itself (see script below)
 
       while 1:
@@ -54,7 +62,8 @@ class aservice(win32serviceutil.ServiceFramework):
          else:
               try:
                   servicemanager.LogInfoMsg("Calling FileMover")  #For Event Log  
-                  filemover()
+                  move = filemover
+                  move()
                  
               except:
                  exc_type, exc_value, exc_traceback = sys.exc_info()
